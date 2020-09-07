@@ -23,7 +23,10 @@ const {
   MIN_LIFERAY_VERSION_VAR,
   NEW_COLLECTION_MESSAGE,
   NEW_COLLECTION_SHORT,
-  NEW_COLLECTION_VALUE
+  NEW_COLLECTION_VALUE,
+  USE_SCSS_DEFAULT,
+  USE_SCSS_MESSAGE,
+  USE_SCSS_VAR
 } = require('../../utils/constants');
 
 module.exports = class extends CustomGenerator {
@@ -43,13 +46,17 @@ module.exports = class extends CustomGenerator {
     if (this._getValue(FRAGMENT_COLLECTION_SLUG_VAR) === NEW_COLLECTION_VALUE) {
       this.composeWith(require.resolve('../collection'), {
         [FRAGMENT_NAME_VAR]: this._getValue(FRAGMENT_NAME_VAR),
-        [MIN_LIFERAY_VERSION_VAR]: this._getValue(MIN_LIFERAY_VERSION_VAR)
+        [MIN_LIFERAY_VERSION_VAR]: this._getValue(MIN_LIFERAY_VERSION_VAR),
+        [USE_SCSS_VAR]: this._getValue(USE_SCSS_VAR)
       });
     } else {
       this._isRequired(FRAGMENT_COLLECTION_SLUG_VAR);
       this._isRequired(FRAGMENT_SLUG_VAR);
       this._isRequired(MIN_LIFERAY_VERSION_VAR);
 
+      const styleFileName = this._getValue(USE_SCSS_VAR)
+        ? 'styles.scss'
+        : 'styles.css';
       const basePath = path.join(
         'src',
         this._getValue(FRAGMENT_COLLECTION_SLUG_VAR) || '',
@@ -59,7 +66,7 @@ module.exports = class extends CustomGenerator {
       this._copyTemplates(basePath, [
         'index.html',
         'main.js',
-        'styles.css',
+        styleFileName,
         'fragment.json',
         'configuration.json'
       ]);
@@ -103,6 +110,13 @@ module.exports = class extends CustomGenerator {
         when:
           !this._hasValue(FRAGMENT_TYPE_VAR) &&
           !this._getValue(DATA_LFR_SUPPORTED)
+      },
+      {
+        type: 'confirm',
+        name: USE_SCSS_VAR,
+        message: USE_SCSS_MESSAGE,
+        default: USE_SCSS_DEFAULT,
+        when: !this._hasValue(USE_SCSS_VAR)
       }
     ]);
 
