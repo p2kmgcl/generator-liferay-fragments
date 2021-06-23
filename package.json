@@ -7,6 +7,10 @@
     "name": "Pablo Molina",
     "email": "pablo.molina@liferay.com"
   },
+  "bin": {
+    "liferay-fragments": "generators/ui.js",
+    "lrf": "generators/ui.js"
+  },
   "main": "generators/cli.js",
   "files": [
     "generators"
